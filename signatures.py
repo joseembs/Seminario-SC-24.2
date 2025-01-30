@@ -5,6 +5,21 @@ import sys
 from Cryptodome.Signature.pss import MGF1
 from Cryptodome.Hash import SHA256
 
+# FUNÇÕES
+
+"""
+a função gerar_p_q recebe o número de bits desejados e retorna 2 números primos, p e q, com essa quantidade de bits
+"""
+def gerar_p_q(bits): # para esse projeto, bits será sempre igual a 1024
+    s = random.getrandbits(bits) # gera um número aleatório s com 1024 bits
+    s |= (1 << (bits - 1)) # garante que o 1024º bit de s será 1
+    s |= 1 # garante que s será ímpar
+    p = nextprime(s)
+    return (p, nextprime(p+1)) # retorna 1º e 2º primos maiores que s
+
+"""
+as funções primo e MillerRabin trabalham em conjunto para fazer o teste de primalidade de Miller-Rabin para um número n
+"""
 def primo(n, b): # n = ímpar maior ou igual a 3, b = base aleatória
     # encontra q ímpar tal que n-1 = q*(2^k)
     q = n-1
@@ -39,27 +54,27 @@ def MillerRabin(n, reps=40): # 40 é o número default de repetições, mas pode
         b = random.randint(2, n-1)
         if not primo(n, b):
             return False
-    return True
+    return True 
 
-def gerar_p_q(bits):
-    p = random.getrandbits(bits)
-    p |= (1 << (bits - 1)) 
-    p |= 1
-    p = nextprime(p)  
-    return (p, nextprime(p+1))  
-
-p, q = gerar_p_q(1024)
-
+"""
+a função gerarChaves recebe os númeors p e q definidos anteriormente e retorna:
+- o módulo público n
+- o expoente público e
+- o expoente privado d
+para realizar a criptografia RSA
+"""
 def gerarChaves(p, q):
     n = p * q
     phi = (p - 1) * (q - 1)
-    e = 65537  
-    d = pow(e, -1, phi)  
-
+    e = 65537 # o primo mais comumente utilizado para RSA
+    d = pow(e, -1, phi)
     return (n, e, d)
 
+# FLUXO PRINCIPAL
 
-while not (MillerRabin(p) and MillerRabin(q)):
+# gera p e q e confere a primalidade
+p, q = gerar_p_q(1024)
+while not (MillerRabin(p) and MillerRabin(q)): # gera p e q novamente, caso um ou outro não seja primo
     print("erro na geração de p e q, tentando novamente...")
     p, q = gerar_p_q(1024)
 
@@ -68,6 +83,7 @@ print(f"q: {q}")
 
 message = "Minha terra tem palmeiras Onde canta o Sabiá, As aves, que aqui gorjeiam, Não gorjeiam como lá. Nosso céu tem mais estrelas, Nossas várzeas têm mais flores, Nossos bosques têm mais vida, Nossa vida mais amores. Em cismar, sozinho, à noite, Mais prazer encontro eu lá; Minha terra tem palmeiras, Onde canta o Sabiá. Minha terra tem primores, Que tais não encontro eu cá; Em cismar – sozinho, à noite – Mais prazer encontro eu lá; Minha terra tem palmeiras, Onde canta o Sabiá. Não permita Deus que eu morra, Sem que eu volte para lá; Sem que desfrute os primores Que não encontro por cá; Sem qu’inda aviste as palmeiras, Onde canta o Sabiá."
 
+# realiza o OAEP
 message_bytes = message.encode("utf-8")
 print(len(message_bytes)) #sys.getsizeof(message_bytes)
 
