@@ -49,6 +49,16 @@ def gerar_p_q(bits):
     return (p, nextprime(p+1))  
 
 p, q = gerar_p_q(1024)
+
+def gerarChaves(p, q):
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    e = 65537  
+    d = pow(e, -1, phi)  
+
+    return (n, e, d)
+
+
 while not (MillerRabin(p) and MillerRabin(q)):
     print("erro na geração de p e q, tentando novamente...")
     p, q = gerar_p_q(1024)
