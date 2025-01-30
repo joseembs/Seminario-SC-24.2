@@ -13,7 +13,7 @@ a função gerar_p_q recebe o número de bits desejados e retorna 2 números pri
 def gerar_p_q(bits): # para esse projeto, bits será sempre igual a 1024
     r = random.getrandbits(bits) # gera um número aleatório r com 1024 bits
     r |= (1 << (bits - 1)) # garante que o 1024º bit de r será 1
-    r |= 1 
+    r |= 1 # garante que r será ímpar
     p = nextprime(r)
 
     s = random.getrandbits(bits+1) # gera um número aleatório s com 1025 bits
@@ -63,7 +63,7 @@ def MillerRabin(n, reps=40): # 40 é o número default de repetições, mas pode
     return True 
 
 """
-a função gerarChaves recebe os númeors p e q definidos anteriormente e retorna:
+a função gerarChaves recebe os números p e q definidos anteriormente e retorna:
 - o módulo público n
 - o expoente público e
 - o expoente privado d
