@@ -1,9 +1,45 @@
 import random
-from sympy import isprime, nextprime
+from sympy import nextprime
 import base64
 import sys
 from Cryptodome.Signature.pss import MGF1
 from Cryptodome.Hash import SHA256
+
+def primo(n, b): # n = ímpar maior ou igual a 3, b = base aleatória
+    # encontra q ímpar tal que n-1 = q*(2^k)
+    q = n-1
+    k = 0
+    while q % 2 == 0:
+        q //= 2
+        k += 1
+
+    x = pow(b, q, n)
+
+    # se b^q é congruente com 1 mod n, n é primo
+    if x == 1:
+        return True
+    
+    # se x não for 1
+    # tenta encontrar um inteiro i tal que b^(q*2^i) é congruente com -1 mod n
+    for i in range(k):
+        if x == n-1:
+            return True
+        x *= x
+        x %= n
+    
+    # se não encontrar, n é composto
+    return False
+
+def MillerRabin(n, reps=40): # 40 é o número default de repetições, mas pode ser passado como argumento se o usuário quiser
+    if n < 3 or n%2 == 0:
+        return False
+    
+    # se n for ímpar maior ou igual a 3, faz o teste
+    for i in range(reps):
+        b = random.randint(2, n-1)
+        if not primo(n, b):
+            return False
+    return True
 
 def gerar_p_q(bits):
     p = random.getrandbits(bits)
@@ -13,6 +49,9 @@ def gerar_p_q(bits):
     return (p, nextprime(p+1))  
 
 p, q = gerar_p_q(1024)
+while not (MillerRabin(p) and MillerRabin(q)):
+    print("erro na geração de p e q, tentando novamente...")
+    p, q = gerar_p_q(1024)
 
 print(f"p: {p}")
 print(f"q: {q}")
