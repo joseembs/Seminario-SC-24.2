@@ -11,11 +11,17 @@ from Cryptodome.Hash import SHA256
 a função gerar_p_q recebe o número de bits desejados e retorna 2 números primos, p e q, com essa quantidade de bits
 """
 def gerar_p_q(bits): # para esse projeto, bits será sempre igual a 1024
-    s = random.getrandbits(bits) # gera um número aleatório s com 1024 bits
-    s |= (1 << (bits - 1)) # garante que o 1024º bit de s será 1
+    r = random.getrandbits(bits) # gera um número aleatório r com 1024 bits
+    r |= (1 << (bits - 1)) # garante que o 1024º bit de r será 1
+    r |= 1 
+    p = nextprime(r)
+
+    s = random.getrandbits(bits+1) # gera um número aleatório s com 1025 bits
+    s |= (1 << (bits)) # garante que o 1025º bit de s será 1
     s |= 1 # garante que s será ímpar
-    p = nextprime(s)
-    return (p, nextprime(p+1)) # retorna 1º e 2º primos maiores que s
+    q = nextprime(s)
+
+    return (p, q) # retorna as chaves primas p e q
 
 """
 as funções primo e MillerRabin trabalham em conjunto para fazer o teste de primalidade de Miller-Rabin para um número n
