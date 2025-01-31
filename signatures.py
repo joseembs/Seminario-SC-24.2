@@ -86,10 +86,10 @@ em específico, o OAEP implementado utiliza os seguintes valores:
 - mLen = k - 2*hLen - 2 = 190 (ou menos): tamanho em bytes da mensagem
 - PSlen = k - mLen - 2*hLen - 2: tamanho em bytes do padding de zeros para o DB
 """
-def oaep(message):
+def oaepEncrypt(message):
     message_bytes = message.encode("utf-8")
 
-    listMsg, result = [], []
+    listMsg, resultListEM = [], []
     sizeCount = 0
 
     while len(message_bytes) > sizeCount+190:
@@ -101,24 +101,50 @@ def oaep(message):
 
     for msg in listMsg:
         hashL = SHA256.new()
-        hashL.update(b"")  # 32 bytes de hash do rótulo
-        PS = bytes([0x00] * (256 - 2*len(message_bytes) - 2))  # Preenchimento
+        hashL.update(b"") # 32 bytes de hash da label
+        PS = bytes([0x00] * (256 - 2*32 - 2))
         DB = hashL.digest() + PS + bytes([0x01]) + msg
+
+        #print(DB)
 
         seed = random.getrandbits(256)
         seedBytes = seed.to_bytes(32,'big')
 
-        seedMask = MGF1(seedBytes, 223, SHA256) #Crypto.Signature.pss.MGF1(mgfSeed, maskLen, hash_gen)
-        DBXor = bytes([intDB ^ intSeedMGF for intDB, intSeedMGF in zip(DB, seedMask)]) # para o XOR funcionar é necessário tratar os bytes como int
+        dbMask = MGF1(seedBytes, 223, SHA256) #Crypto.Signature.pss.MGF1(mgfSeed, maskLen, hash_gen)
+        DBXor = bytes([intDB ^ intSeedMGF for intDB, intSeedMGF in zip(DB, dbMask)]) # para o XOR funcionar é necessário tratar os bytes como int
 
-        dbMask = MGF1(DBXor, 32, SHA256)
-        seedXor = bytes([intSeedBytes ^ intDBMGF for intSeedBytes, intDBMGF in zip(seedBytes, dbMask)]) 
+        seedMask = MGF1(DBXor, 32, SHA256)
+        seedXor = bytes([intSeedBytes ^ intDBMGF for intSeedBytes, intDBMGF in zip(seedBytes, seedMask)]) 
 
         EM = DBXor + seedXor + bytes([0x00])
 
-        result.append(EM)
+        resultListEM.append(EM)
 
-    return result
+    return resultListEM
+
+def rsaEncrypt(mList, n, e):
+    resultListC = []
+    for mBytes in mList:
+        mNum = int.from_bytes(mBytes, "big")
+        #print(mNum)
+
+        cNum = pow(mNum, e, n)
+        #print(cNum)
+
+        resultListC.append(cNum)
+    return resultListC
+    
+def rsaDecrypt(cList, n, d):
+    resultListM = []
+    for cNum in cList:
+        mNum = pow(cNum, d, n)
+        #print(cNum)
+        #print(mNum)
+
+        mBytes = mNum.to_bytes(256, 'big')
+
+        resultListM.append(mBytes)
+    return resultListM
 
 # FLUXO PRINCIPAL
 
@@ -131,13 +157,31 @@ while not (MillerRabin(p) and MillerRabin(q)): # gera p e q novamente, caso um o
 print(f"p: {p}")
 print(f"q: {q}")
 
+n, e, d = gerarChaves(p, q)
+
+print(f"n: {n}")
+print(f"e: {e}")
+print(f"d: {d}")
+
+
 message = "Minha terra tem palmeiras Onde canta o Sabiá, As aves, que aqui gorjeiam, Não gorjeiam como lá. Nosso céu tem mais estrelas, Nossas várzeas têm mais flores, Nossos bosques têm mais vida, Nossa vida mais amores. Em cismar, sozinho, à noite, Mais prazer encontro eu lá; Minha terra tem palmeiras, Onde canta o Sabiá. Minha terra tem primores, Que tais não encontro eu cá; Em cismar – sozinho, à noite – Mais prazer encontro eu lá; Minha terra tem palmeiras, Onde canta o Sabiá. Não permita Deus que eu morra, Sem que eu volte para lá; Sem que desfrute os primores Que não encontro por cá; Sem qu’inda aviste as palmeiras, Onde canta o Sabiá."
 
-resultOAEP = oaep(message)
+resEncryptOAEP = oaepEncrypt(message)
 
-print(resultOAEP)
+print("resEncryptOAEP")
+print(resEncryptOAEP)
 
-    
+resEncryptRSA = rsaEncrypt(resEncryptOAEP, n, e)
+
+print("resEncryptRSA")
+print(resEncryptRSA)
+
+resDecryptRSA = rsaDecrypt(resEncryptRSA, n, d)
+
+print("resDecryptRSA")
+print(resDecryptRSA)
+
+#resDecryptOAEP = oaepDecrypt(resDecryptRSA)
 
 # string = "Teste"
 # byte_string = string.encode("utf-8")
