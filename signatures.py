@@ -18,10 +18,7 @@ def gerarPQ(bits): # para esse projeto, bits será sempre igual a 1024
     r |= 1 # garante que r será ímpar
     p = nextprime(r)
 
-    s = random.getrandbits(bits) # gera um número aleatório s com 1025 bits
-    s |= (1 << (bits - 1)) # garante que o 1025º bit de s será 1
-    s |= 1 # garante que s será ímpar
-    q = nextprime(s)
+    q = nextprime(p+1) # q é o próximo primo diferente de p
 
     return (p, q) # retorna as chaves primas p e q
 
