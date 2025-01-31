@@ -99,28 +99,61 @@ def oaepEncrypt(message):
     lastM = message_bytes[sizeCount:]
     listMsg.append(lastM)
 
+    hashL = SHA256.new()
+    hashL.update(b"") # 32 bytes de hash da label
+
     for msg in listMsg:
-        hashL = SHA256.new()
-        hashL.update(b"") # 32 bytes de hash da label
-        PS = bytes([0x00] * (256 - 2*32 - 2))
+        PS = bytes([0x00] * (256 - len(msg) - (2*32) - 2))
         DB = hashL.digest() + PS + bytes([0x01]) + msg
 
-        #print(DB)
+        print(DB)
 
         seed = random.getrandbits(256)
         seedBytes = seed.to_bytes(32,'big')
 
         dbMask = MGF1(seedBytes, 223, SHA256) #Crypto.Signature.pss.MGF1(mgfSeed, maskLen, hash_gen)
-        DBXor = bytes([intDB ^ intSeedMGF for intDB, intSeedMGF in zip(DB, dbMask)]) # para o XOR funcionar é necessário tratar os bytes como int
+        DBXor = bytes([intDB ^ intDBMask for intDB, intDBMask in zip(DB, dbMask)]) # para o XOR funcionar é necessário tratar os bytes como int
 
         seedMask = MGF1(DBXor, 32, SHA256)
-        seedXor = bytes([intSeedBytes ^ intDBMGF for intSeedBytes, intDBMGF in zip(seedBytes, seedMask)]) 
+        seedXor = bytes([intSeedBytes ^ intSeedMask for intSeedBytes, intSeedMask in zip(seedBytes, seedMask)]) 
 
-        EM = DBXor + seedXor + bytes([0x00])
-
+        EM = bytes([0x00]) + seedXor + DBXor
         resultListEM.append(EM)
 
     return resultListEM
+
+def oaepDecrypt(cList):
+    hashLBase = SHA256.new()
+    hashLBase.update(b"") # 32 bytes de hash da label
+
+    tempListM, msgList = [], []
+    resultMessage = ""
+
+    for crypt in cList:
+        maskedSeed = crypt[1:33]
+        maskedDB = crypt[33:]
+
+        seedMask = MGF1(maskedDB, 32, SHA256)
+        seedBytes = bytes([intMaskedSeed ^ intSeedMask for intMaskedSeed, intSeedMask in zip(maskedSeed, seedMask)])
+
+        dbMask = MGF1(seedBytes, 223, SHA256)
+
+        DB = bytes([intMaskedDB ^ intDBMask for intMaskedDB, intDBMask in zip(maskedDB, dbMask)])
+        
+        hashL = DB[:32]
+        b = DB[32]
+        count = 32
+        while b == 0x00 or b == 0x01:
+            count += 1
+            b = DB[count]
+            
+        msgList.append(DB[count:])
+
+    for msg in msgList:
+        resultMessage += msg.decode("utf-8")
+
+    return resultMessage
+
 
 def rsaEncrypt(mList, n, e):
     resultListC = []
@@ -168,20 +201,26 @@ message = "Minha terra tem palmeiras Onde canta o Sabiá, As aves, que aqui gorj
 
 resEncryptOAEP = oaepEncrypt(message)
 
-print("resEncryptOAEP")
+print("resEncryptOAEP:")
 print(resEncryptOAEP)
 
 resEncryptRSA = rsaEncrypt(resEncryptOAEP, n, e)
 
-print("resEncryptRSA")
+print("resEncryptRSA:")
 print(resEncryptRSA)
 
 resDecryptRSA = rsaDecrypt(resEncryptRSA, n, d)
 
-print("resDecryptRSA")
+print("resDecryptRSA:")
 print(resDecryptRSA)
 
-#resDecryptOAEP = oaepDecrypt(resDecryptRSA)
+resDecryptOAEP = oaepDecrypt(resDecryptRSA)
+
+print("resDecryptOAEP:")
+print(resDecryptOAEP)
+
+print("message:")
+print(message)
 
 # string = "Teste"
 # byte_string = string.encode("utf-8")
