@@ -4,6 +4,8 @@ import base64
 import sys
 from Cryptodome.Signature.pss import MGF1
 from Cryptodome.Hash import SHA256
+from Cryptodome.Hash import SHA3_256
+
 
 # FUNÇÕES
 
@@ -16,8 +18,8 @@ def gerarPQ(bits): # para esse projeto, bits será sempre igual a 1024
     r |= 1 # garante que r será ímpar
     p = nextprime(r)
 
-    s = random.getrandbits(bits+1) # gera um número aleatório s com 1025 bits
-    s |= (1 << (bits)) # garante que o 1025º bit de s será 1
+    s = random.getrandbits(bits) # gera um número aleatório s com 1025 bits
+    s |= (1 << (bits - 1)) # garante que o 1025º bit de s será 1
     s |= 1 # garante que s será ímpar
     q = nextprime(s)
 
@@ -125,8 +127,9 @@ def oaepEncrypt(message):
 def oaepDecrypt(cList):
     hashLBase = SHA256.new()
     hashLBase.update(b"") # 32 bytes de hash da label
+    hashLComp = hashLBase.digest()
 
-    tempListM, msgList = [], []
+    msgList = []
     resultMessage = ""
 
     for crypt in cList:
@@ -147,37 +150,73 @@ def oaepDecrypt(cList):
             count += 1
             b = DB[count]
             
-        msgList.append(DB[count:])
+        if hashLComp == hashL:
+            print("YES")
+            msgList.append(DB[count:])
+        else:
+            print("NO")
+            msgList.append(b'ERROR')
 
     for msg in msgList:
         resultMessage += msg.decode("utf-8")
 
     return resultMessage
 
+def rsaEncrypt(mBytes, n, e):
+    mNum = int.from_bytes(mBytes, 'big')
 
-def rsaEncrypt(mList, n, e):
-    resultListC = []
-    for mBytes in mList:
-        mNum = int.from_bytes(mBytes, "big")
-        #print(mNum)
+    cNum = pow(mNum, e, n)
 
-        cNum = pow(mNum, e, n)
-        #print(cNum)
-
-        resultListC.append(cNum)
-    return resultListC
+    return cNum.to_bytes(256, 'big')
     
-def rsaDecrypt(cList, n, d):
-    resultListM = []
-    for cNum in cList:
-        mNum = pow(cNum, d, n)
-        #print(cNum)
-        #print(mNum)
+def rsaDecrypt(cBytes, n, d):
+    cNum = int.from_bytes(cBytes, 'big')
+    
+    mNum = pow(cNum, d, n)
 
-        mBytes = mNum.to_bytes(256, 'big')
+    return mNum.to_bytes(256, 'big')
 
-        resultListM.append(mBytes)
-    return resultListM
+def authEncrypt(oaepList, n, e):
+    resultListAuth = []
+
+    for msg in oaepList:
+        shaObj = SHA3_256.new()
+        shaObj.update(msg)
+        tempSha = shaObj.digest()
+
+        encHash = rsaEncrypt(tempSha, n, e)
+
+        authMsg = msg + encHash
+
+        resultListAuth.append(base64.b64encode(authMsg))
+
+    return resultListAuth
+
+def authDecrypt(authList, n, d):
+    resultListMsg = []
+
+    for authB64 in authList:
+        authMsg = base64.b64decode(authB64)
+        msg = authMsg[:256]
+        encHash = authMsg[256:]
+
+        decHash = rsaDecrypt(encHash, n, d)
+
+        shaObj = SHA3_256.new()
+        shaObj.update(msg)
+        testHash = shaObj.digest()
+
+        print(decHash)
+        print(testHash)
+
+        if testHash == decHash[224:]:
+            print("Y")
+            resultListMsg.append(msg)
+        else:
+            print("N")
+            resultListMsg.append("ERROR")
+        
+    return resultListMsg
 
 # FLUXO PRINCIPAL
 
@@ -204,45 +243,17 @@ resEncryptOAEP = oaepEncrypt(message)
 print("resEncryptOAEP:")
 print(resEncryptOAEP)
 
-resEncryptRSA = rsaEncrypt(resEncryptOAEP, n, e)
+resAuth = authEncrypt(resEncryptOAEP, n, e)
 
-print("resEncryptRSA:")
-print(resEncryptRSA)
+print("resAuth:")
+print(resAuth)
 
-resDecryptRSA = rsaDecrypt(resEncryptRSA, n, d)
+resCheck = authDecrypt(resAuth, n, d)
 
-print("resDecryptRSA:")
-print(resDecryptRSA)
-
-resDecryptOAEP = oaepDecrypt(resDecryptRSA)
+resDecryptOAEP = oaepDecrypt(resCheck)
 
 print("resDecryptOAEP:")
 print(resDecryptOAEP)
 
 print("message:")
 print(message)
-
-# string = "Teste"
-# byte_string = string.encode("utf-8")
-
-# byte_base64 = base64.b64encode(byte_string)
-# string_base64 = byte_base64.decode("utf-8")
-
-# byte_result = base64.b64decode(byte_base64)
-# string_result = byte_result.decode("utf-8")
-
-# print(string)
-# print(string_base64)
-# print(string_result)
-
-
-
-# from Cryptodome.Cipher import PKCS1_OAEP
-# from Cryptodome.PublicKey import RSA
-
-# message = b'You can attack now!'
-# key = RSA.generate(1024)
-# print(key)
-# cipher = PKCS1_OAEP.new(key)
-# ciphertext = cipher.encrypt(message)
-# print(ciphertext)
