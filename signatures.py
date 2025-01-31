@@ -93,42 +93,48 @@ message = "Minha terra tem palmeiras Onde canta o Sabiá, As aves, que aqui gorj
 message_bytes = message.encode("utf-8")
 print(len(message_bytes)) #sys.getsizeof(message_bytes)
 
-listDB = []
+listMsg = []
 sizeCount = 0
 
-while len(message_bytes) > sizeCount+128:
-    temp = message_bytes[sizeCount:sizeCount+128]
+while len(message_bytes) > sizeCount+190:
+    temp = message_bytes[sizeCount:sizeCount+190]
     print(len(temp))
-    listDB.append(temp)
-    sizeCount += 128
+    listMsg.append(temp)
+    sizeCount += 190
 
 lastM = message_bytes[sizeCount:]
 
-if len(lastM) < 128:
-    lastM += bytes([0x01])
-    lastM += bytes([0x00] * (128-len(lastM))) 
-
 print(len(lastM))
-listDB.append(lastM)
+listMsg.append(lastM)
 
-print(listDB)
+print(listMsg)
 
 resultsOAEP = []
 
-for DB in listDB:
-    seed = random.getrandbits(1024)
-    seedBytes = seed.to_bytes(128,'big')
+"""
+- hLen = 32: tamanho em bytes do output da Hash
+- k = 256: tamanho em bytes do módulo n do RSA
+- mLen = k - 2*hLen - 2 = 190 (ou menos): tamanho em bytes da mensagem
+- PSlen = k - mLen - 2*hLen - 2: tamanho em bytes do padding de zeros para o DB
+"""
+for msg in listMsg:
+    hashL = SHA256.new()
+    hashL.update(b"")  # 32 bytes de hash do rótulo
+    PS = bytes([0x00] * (256 - 2*len(message_bytes) - 2))  # Preenchimento
+    DB = hashL.digest() + PS + bytes([0x01]) + message_bytes
 
-    seedMGF = MGF1(seedBytes, 128, SHA256) #Crypto.Signature.pss.MGF1(mgfSeed, maskLen, hash_gen)
+    seed = random.getrandbits(256)
+    seedBytes = seed.to_bytes(32,'big')
 
-    DBXor = bytes([intDB ^ intSeedMGF for intDB, intSeedMGF in zip(DB, seedMGF)]) # para o XOR funcionar é necessário tratar os bytes como int
+    seedMask = MGF1(seedBytes, 223, SHA256) #Crypto.Signature.pss.MGF1(mgfSeed, maskLen, hash_gen)
+    DBXor = bytes([intDB ^ intSeedMGF for intDB, intSeedMGF in zip(DB, seedMask)]) # para o XOR funcionar é necessário tratar os bytes como int
 
-    dbMGF = MGF1(DBXor, 128, SHA256)
-
-    seedXor = bytes([intSeedBytes ^ intDBMGF for intSeedBytes, intDBMGF in zip(seedBytes, dbMGF)]) 
+    dbMask = MGF1(DBXor, 32, SHA256)
+    seedXor = bytes([intSeedBytes ^ intDBMGF for intSeedBytes, intDBMGF in zip(seedBytes, dbMask)]) 
 
     result = DBXor + seedXor + bytes([0x00])
 
+    print(len(result))
     resultsOAEP.append(result)
 
 print(resultsOAEP)
