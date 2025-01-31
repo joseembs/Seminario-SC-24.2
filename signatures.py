@@ -10,7 +10,7 @@ from Cryptodome.Hash import SHA256
 """
 a função gerar_p_q recebe o número de bits desejados e retorna 2 números primos, p e q, com essa quantidade de bits
 """
-def gerar_p_q(bits): # para esse projeto, bits será sempre igual a 1024
+def gerarPQ(bits): # para esse projeto, bits será sempre igual a 1024
     r = random.getrandbits(bits) # gera um número aleatório r com 1024 bits
     r |= (1 << (bits - 1)) # garante que o 1024º bit de r será 1
     r |= 1 # garante que r será ímpar
@@ -76,68 +76,67 @@ def gerarChaves(p, q):
     d = pow(e, -1, phi)
     return (n, e, d)
 
+"""
+a função oaep recebe uma string com o texto claro que será processado, e então o divide em blocos de no máximo 190 bytes e realiza o esquema de padding em 
+    cada um desses blocos, para que eles possam ser corretamente criptografados pelo RSA. Sendo que todos os blocos processados são retornados em uma lista
+
+em específico, o OAEP implementado utiliza os seguintes valores:
+- hLen = 32: tamanho em bytes do output da Hash
+- k = 256: tamanho em bytes do módulo n do RSA
+- mLen = k - 2*hLen - 2 = 190 (ou menos): tamanho em bytes da mensagem
+- PSlen = k - mLen - 2*hLen - 2: tamanho em bytes do padding de zeros para o DB
+"""
+def oaep(message):
+    message_bytes = message.encode("utf-8")
+
+    listMsg, result = [], []
+    sizeCount = 0
+
+    while len(message_bytes) > sizeCount+190:
+        temp = message_bytes[sizeCount:sizeCount+190]
+        listMsg.append(temp)
+        sizeCount += 190
+    lastM = message_bytes[sizeCount:]
+    listMsg.append(lastM)
+
+    for msg in listMsg:
+        hashL = SHA256.new()
+        hashL.update(b"")  # 32 bytes de hash do rótulo
+        PS = bytes([0x00] * (256 - 2*len(message_bytes) - 2))  # Preenchimento
+        DB = hashL.digest() + PS + bytes([0x01]) + msg
+
+        seed = random.getrandbits(256)
+        seedBytes = seed.to_bytes(32,'big')
+
+        seedMask = MGF1(seedBytes, 223, SHA256) #Crypto.Signature.pss.MGF1(mgfSeed, maskLen, hash_gen)
+        DBXor = bytes([intDB ^ intSeedMGF for intDB, intSeedMGF in zip(DB, seedMask)]) # para o XOR funcionar é necessário tratar os bytes como int
+
+        dbMask = MGF1(DBXor, 32, SHA256)
+        seedXor = bytes([intSeedBytes ^ intDBMGF for intSeedBytes, intDBMGF in zip(seedBytes, dbMask)]) 
+
+        EM = DBXor + seedXor + bytes([0x00])
+
+        result.append(EM)
+
+    return result
+
 # FLUXO PRINCIPAL
 
 # gera p e q e confere a primalidade
-p, q = gerar_p_q(1024)
+p, q = gerarPQ(1024)
 while not (MillerRabin(p) and MillerRabin(q)): # gera p e q novamente, caso um ou outro não seja primo
     print("erro na geração de p e q, tentando novamente...")
-    p, q = gerar_p_q(1024)
+    p, q = gerarPQ(1024)
 
 print(f"p: {p}")
 print(f"q: {q}")
 
 message = "Minha terra tem palmeiras Onde canta o Sabiá, As aves, que aqui gorjeiam, Não gorjeiam como lá. Nosso céu tem mais estrelas, Nossas várzeas têm mais flores, Nossos bosques têm mais vida, Nossa vida mais amores. Em cismar, sozinho, à noite, Mais prazer encontro eu lá; Minha terra tem palmeiras, Onde canta o Sabiá. Minha terra tem primores, Que tais não encontro eu cá; Em cismar – sozinho, à noite – Mais prazer encontro eu lá; Minha terra tem palmeiras, Onde canta o Sabiá. Não permita Deus que eu morra, Sem que eu volte para lá; Sem que desfrute os primores Que não encontro por cá; Sem qu’inda aviste as palmeiras, Onde canta o Sabiá."
 
-# realiza o OAEP
-message_bytes = message.encode("utf-8")
-print(len(message_bytes)) #sys.getsizeof(message_bytes)
+resultOAEP = oaep(message)
 
-listMsg = []
-sizeCount = 0
+print(resultOAEP)
 
-while len(message_bytes) > sizeCount+190:
-    temp = message_bytes[sizeCount:sizeCount+190]
-    print(len(temp))
-    listMsg.append(temp)
-    sizeCount += 190
-
-lastM = message_bytes[sizeCount:]
-
-print(len(lastM))
-listMsg.append(lastM)
-
-print(listMsg)
-
-resultsOAEP = []
-
-"""
-- hLen = 32: tamanho em bytes do output da Hash
-- k = 256: tamanho em bytes do módulo n do RSA
-- mLen = k - 2*hLen - 2 = 190 (ou menos): tamanho em bytes da mensagem
-- PSlen = k - mLen - 2*hLen - 2: tamanho em bytes do padding de zeros para o DB
-"""
-for msg in listMsg:
-    hashL = SHA256.new()
-    hashL.update(b"")  # 32 bytes de hash do rótulo
-    PS = bytes([0x00] * (256 - 2*len(message_bytes) - 2))  # Preenchimento
-    DB = hashL.digest() + PS + bytes([0x01]) + message_bytes
-
-    seed = random.getrandbits(256)
-    seedBytes = seed.to_bytes(32,'big')
-
-    seedMask = MGF1(seedBytes, 223, SHA256) #Crypto.Signature.pss.MGF1(mgfSeed, maskLen, hash_gen)
-    DBXor = bytes([intDB ^ intSeedMGF for intDB, intSeedMGF in zip(DB, seedMask)]) # para o XOR funcionar é necessário tratar os bytes como int
-
-    dbMask = MGF1(DBXor, 32, SHA256)
-    seedXor = bytes([intSeedBytes ^ intDBMGF for intSeedBytes, intDBMGF in zip(seedBytes, dbMask)]) 
-
-    result = DBXor + seedXor + bytes([0x00])
-
-    print(len(result))
-    resultsOAEP.append(result)
-
-print(resultsOAEP)
     
 
 # string = "Teste"
