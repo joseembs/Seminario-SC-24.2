@@ -115,12 +115,12 @@ def oaepEncrypt(message):
         seedBytes = seed.to_bytes(32,'big')
 
         dbMask = MGF1(seedBytes, 223, SHA256)
-        DBXor = bytes([intDB ^ intDBMask for intDB, intDBMask in zip(DB, dbMask)]) # para o XOR funcionar é necessário tratar os bytes como int
+        maskedDB = bytes([intDB ^ intDBMask for intDB, intDBMask in zip(DB, dbMask)]) # para o XOR funcionar é necessário tratar os bytes como int
 
-        seedMask = MGF1(DBXor, 32, SHA256)
-        seedXor = bytes([intSeedBytes ^ intSeedMask for intSeedBytes, intSeedMask in zip(seedBytes, seedMask)]) 
+        seedMask = MGF1(maskedDB, 32, SHA256)
+        maskedSeed = bytes([intSeedBytes ^ intSeedMask for intSeedBytes, intSeedMask in zip(seedBytes, seedMask)]) 
 
-        EM = bytes([0x00]) + seedXor + DBXor
+        EM = bytes([0x00]) + maskedSeed + maskedDB
         resultListEM.append(EM)
 
     return resultListEM
@@ -141,9 +141,9 @@ def oaepDecrypt(cList):
     correctCount = 0
     hashErrors = []
 
-    for crypt in cList:
-        maskedSeed = crypt[1:33]
-        maskedDB = crypt[33:]
+    for EM in cList:
+        maskedSeed = EM[1:33]
+        maskedDB = EM[33:]
 
         seedMask = MGF1(maskedDB, 32, SHA256)
         seedBytes = bytes([intMaskedSeed ^ intSeedMask for intMaskedSeed, intSeedMask in zip(maskedSeed, seedMask)])
@@ -163,7 +163,7 @@ def oaepDecrypt(cList):
             correctCount += 1
             msgList.append(DB[count:])
         else:
-            hashErrors.append(crypt)
+            hashErrors.append(EM)
 
     print(f"Verificação das hashes de label do OAEP:\n{correctCount} hashes corretas de {len(cList)}, erro nos seguintes blocos:\n{hashErrors}\n")
 
