@@ -86,7 +86,7 @@ em específico, o OAEP implementado utiliza os seguintes valores:
 - k = 256: tamanho em bytes do módulo n do RSA, que também é o tamanho dos blocos gerados pelo OAEP
 - mLen = k - 2*hLen - 2 = 190 (ou menos): tamanho em bytes dos blocos da mensagem
 - PSlen = k - mLen - 2*hLen - 2: tamanho em bytes do padding de zeros para o DB
-- DB = Hash(L)||PS||0x01||M = 223 bytes: bloco de dados usado que será mascarado e usado para mascarar a seed
+- DB = Hash(L)||PS||0x01||M = 223 bytes: bloco de dados que será mascarado e usado para mascarar a seed
 - Seed: valor aleatório gerado pelo SHA256, de tamanho 32 bytes
 - maskedSeed, maskedDB: máscaras geradas pelo XOR do DB e da Seed após serem processados pela função MGF1
 - EM = 0x00||maskedSeed||maskedDB = 256 bytes: bloco de bytes resultante
@@ -258,6 +258,7 @@ while not (MillerRabin(p) and MillerRabin(q)): # gera p e q novamente, caso um o
     print("erro na geração de p e q, tentando novamente...")
     p, q = gerarPQ(1024)
 
+print(f"Valores para o RSA:")
 print(f"p: {p}")
 print(f"q: {q}\n")
 
@@ -267,7 +268,9 @@ print(f"n: {n}")
 print(f"e: {e}")
 print(f"d: {d}\n")
 
-message = "Minha terra tem palmeiras Onde canta o Sabiá, As aves, que aqui gorjeiam, Não gorjeiam como lá. Nosso céu tem mais estrelas, Nossas várzeas têm mais flores, Nossos bosques têm mais vida, Nossa vida mais amores. Em cismar, sozinho, à noite, Mais prazer encontro eu lá; Minha terra tem palmeiras, Onde canta o Sabiá. Minha terra tem primores, Que tais não encontro eu cá; Em cismar – sozinho, à noite – Mais prazer encontro eu lá; Minha terra tem palmeiras, Onde canta o Sabiá. Não permita Deus que eu morra, Sem que eu volte para lá; Sem que desfrute os primores Que não encontro por cá; Sem qu’inda aviste as palmeiras, Onde canta o Sabiá."
+readFile = open("exemplo.txt", mode="r", encoding="utf-8")
+message = readFile.read()
+readFile.close()
 
 print(f"Mensagem inicial:\n{message}\n")
 
