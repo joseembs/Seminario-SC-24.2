@@ -1,5 +1,5 @@
 # Seminario-SC-24.2
-Repositório com todos os arquivos para o seminário de Segurança Computacional.
+Repositório com todos os arquivos para o seminário de Segurança Computacional no semestre 2024.2 na Universidade de Brasília.
 
 Integrantes do grupo:
 - Elis Rodrigues Borges - 231018875
