@@ -1,0 +1,97 @@
+(Exemplo de output do programa)
+
+Valores para o RSA:
+p: 129703824836315951121817381823932512639382447263513957769612073511944829014396936697227821310769988532923855925080759749259337611833912588688236989651101506012210639913606881934697284735590691424944760778758292708133501495107602219897509497060402948348824180554164007644839274391501664965860347985259176068071
+q: 129703824836315951121817381823932512639382447263513957769612073511944829014396936697227821310769988532923855925080759749259337611833912588688236989651101506012210639913606881934697284735590691424944760778758292708133501495107602219897509497060402948348824180554164007644839274391501664965860347985259176068297
+
+n: 16823082177169730564817978605254323286176415067199258171795160000140518919591531135894466763970976421932590066851565787906276638384504798908940983867619425819249167553655550171174243201425385913190524706627905256577540639112110078631319503327037950998313382524576705367125109469326404417252163954975307773386687775861167765999681901660756544033059807307871285131024212307557215852795564412418295893849708955802156242678351118684619815587851962810073689452322357435071359964172182911822619202232257278045483822727967841083934358749625457057265012043845821661816496611244690450131730963976251388231826252799317417045087
+e: 65537
+d: 2419615981842346770587214342022479687741258959418652173998522638529754662802230381112062555765299353848003325909682455968453905326950306460711929351910839796942836159127778444443419998117638702072628986445437462021451974674927897236352253511156441797917236731566291175832297509160789905504049581756828220271609530475327725315508080988939780709024583148270182774816691310270337865814296948301550547142480137839212112418733160839345550590854016529987700887265025490816492119545229094841190402191218722067132640841550170681041739710212567575144912865811800946061160315635219071834554313832057558288246257513591711336033
+
+Mensagem inicial:
+Canção do exílio
+Gonçalves Dias
+
+Minha terra tem palmeiras
+Onde canta o Sabiá,
+As aves, que aqui gorjeiam,
+Não gorjeiam como lá.
+
+Nosso céu tem mais estrelas,
+Nossas várzeas têm mais flores,
+Nossos bosques têm mais vida,
+Nossa vida mais amores.
+
+Em cismar, sozinho, à noite,
+Mais prazer encontro eu lá;
+Minha terra tem palmeiras,
+Onde canta o Sabiá.
+
+Minha terra tem primores,
+Que tais não encontro eu cá;
+Em cismar – sozinho, à noite –
+Mais prazer encontro eu lá;
+Minha terra tem palmeiras,
+Onde canta o Sabiá.
+
+Não permita Deus que eu morra,
+Sem que eu volte para lá;
+Sem que desfrute os primores
+Que não encontro por cá;
+Sem qu’inda aviste as palmeiras,
+Onde canta o Sabiá.
+
+Blocos da mensagem após OAEP:
+b'\x00e\x8f\x86\xa6\t\x08\x99\xaa\x86\x0b,+\xc7Q~)\xe7\xe1DU\xb2\x15\xab\x00\xdc\xf8\xd1\xfe\xd4X\\]\xdf\x87\xdd/\x16\x19\xe6\xfbZ\xe4\x18=\x14rN\xdc\xbeV\xd8^\x8fwI\xa2i\xcd]-8q\xdf\x9d\xbd5\x9d\x9b\tAEdj\x80\xa3\xf3/]FkoRZ@\xf4S\xd8\x88\xc7\xd0\x01<\xb9 \xf4y\xe0\xee\x1c)\x87q}\x1dV\x14\x1e\xf6\xba\x8b&\xa1W<\x83\x1b\x96\xaaS;"\x1e\xbd\x02`\xc2\xa6\x14\xca\xde\x15\xb4\xc2\x81\xdbX\x19^\x03f+\x14_E\x02\x97\x9d\xcaW\xf6\xc4\x8b*0\x19+\xd4\x9f\xbd\x9d\xcf[\x95\xf7\xe9z`\xc6\x16X\x97\xc5\xd3\x06,\x06R\x10\xc1z\xa60s\x9f\x1ep\xa0\xefc\xbb\xb2\x1a\x85\x9f\r\x85\xd6\x1fw\x86?\xa5\x8c{\x9c\xc6*\xd7\x86\x01\xdf\xc2\xffC\x11\xcf\xb0&\xbe\x80\xb5\x94W3H\x05\x02\x15l"\x03\x0c\xac\x7f\xae\xaag\xd5\x92\x91\xfb\xf5\xe7J\x9c\x883\xc7p]\xb6O\x886\xd2'
+b"\x00\xd6\x08z\xb6)\xdf<)\x84K\t\xc6\x94\xa8\xc5\xe1\xd4\xce.|^\xbe\x00\x04rw\x0ch\xe0\xd2?Ro:\x80\x86X\xe4+J\xa4\x035\x82\xdc_<\x82\x17Dm\xa3\xddD/U/#\xe6\x18U\xc2\x1f\xdb 6\xf7\\\xcc\xce\xdes\x02p\x95\xa7\x8e\x13\xbb\x8c5\x1e\xe4?\xb6c9\x1a\xdc\xa01z\xabB3\xba4y\xab\xdd\x0c\x03\x1d\xd5^\xca\x14\xb2\xf3\xf7'\x7f\x12#)_3m\xa0F2\xd4\x1d\xb35\x9c\xc5\xcek(\x07\x80\xcb\xa9\xe3V\x92\x95M\xe3\x98\x07f\x95\xe7~\xa9L\x857*\x12\x8cg\xf6\xe8\xef\xb2\x82\xd6\x11\x0e\x99\x94\xfc2\xc4\x8bj2\x94\x84\x85I\xd5E]\x14\xc2\xc8U\xf7N\x18\xb2$\x0e\xf4\xaf\x91\xac\x83\xc1\xa7\x0f\x9d)\xd1\xed#\xcd4\x14\xd9Q\x9b\xbb\xc26\xbc<1.\xaeasbT\x04\xde\xa7\xddz\x88 \x1f\xf8\xb4\xa6\x91\xb2\xb7\x9d\xfb\xe2|GJ\x88!\xd5E=\xe2\xcd\x08\xf2K\n\xaa\xbaP\xdcZ\xdd"
+b'\x00\xff\x819L,\xf2\x89\x92\xd6\x89\xea\xa2\xc1y\x981\x96\xd5\xdc\x92a^\xfcH\xd9\xeeg\xdaL\x1a\x9af\xbc\xac\xeb\xe0\xbd\x7f\x87\xaez\x98\xb5\xbd\x0e.\x1d\xc3E\xe7t\x12\xf1\x1cd\xf6\x9b=\x9ch\xef\x1a\xe1T\xf4\x9f!\xc2n\xa8\xfd\xe3y\x1f\x95\x11E\x89\x8e3\xba\xbc%O\xa8&4\x83\x06\x86\xd6\xc70\xb1/kB$X\xde\xdb\xa0\x84y\xc1\xe8\xaa\x07\xa0\x9d\xc6\x95TAY8\xc6ai\x00$9\xc6Vhf\xa4\xf2\x1c\xc6\xaa\x8b\x97\xf4_h\xe6\xb4\xff\x19\xc1\x18\x00\x83\x0e`4}\xa3\x97\x81\xa8<\xeb\x02\xa6\x18\x0b\xda\xb1\x81\xdbI\xf1D\xf1\xc4\xb6^\xfe\xa4\xc0\x88\xc4\xf4F\x9ez\xf8j\x95+O\xdd\x05\xaf\xf6\x91\x86\xe1\x1c\x82Q\xc6i#\xc1i\x07\xdePI{\xc0\xe3\xb3\x14\xb9:V\xa4S\x0f\xe4\x9e\xe2\r\xb8B\x0c\xa4\x17r#\xe1\xd6`\x83c\x1c\x1b.%4\x0e\x81^\xa2\xbf\xff\xa1\tU\xfdf~\x13\x88SFG\x8a\xd1j\x8e'
+b"\x00\xbb\x82\x19\x8dr\xbf\xeb`Eh\xb2\xd1\xe6\xa5\x15\xf0\x04Bl\xc2\xea8\xeal\x1ee\x8c?\xbf\xcf\r^iu\xc9\xc0?\xe4\xc1\xf5%\xbb<\x02\x03Z\x07\xfbh\xd6\x83\xaa=\x86\xe9;\xc0\xa4\xdb\xa3P\xda\xbf\xb1\xa0u\xac\x94\xd7\xe39N\xe9\xd8\xe2\xa5jm\xe79N\xf5P}\x04\t(\xd4\r\x0e\xd8,\x1a\x0b\xcdB\xd17\xbc\x8a\xdb_W\x16\xe4\xb1\x9b\xcf\x16\x85A\x85\xd4+\x08\xb3Q3\x8d\xd9\xc6\xf0c\xf1\xee\x1b\xf8gS\x976\x0c\x0f\x1f\xe3\xa4\xca.\xcd\xb6\xd7'\xd7\x13!U]\xc6q3\xa9\xf6\xb3_B_\x18\x88_L\xc4S\xdf\x95\x98\xb5\xdd\xf74\xf9N/hF\x8a\xfb\x9f\xab=\xc7\xd4y\xca\\9\xff\xba\x82\xd1.\xff\x0bh\x02h\xc7\x80\x07\xf1\xfc\xacr<\xdc\xc4\x85\xfa7\x1eu\xd2\x1eJT\xee^\x01\xb1Z\x99h+\x18\xb5\xdeQ\xa7\\=l\x95rn\xf2\xa96\x03\x9f\xd9\xe7q\x82\x1f\x1d\xc2f\x80\xf3\x80\xc7!\xefv\xaf\xc4"
+
+Blocos codificados e assinados, os quais seriam enviados ao destinatário da mensagem:
+b'AGWPhqYJCJmqhgssK8dRfinn4URVshWrANz40f7UWFxd34fdLxYZ5vta5Bg9FHJO3L5W2F6Pd0miac1dLThx3529NZ2bCUFFZGqAo/MvXUZrb1JaQPRT2IjH0AE8uSD0eeDuHCmHcX0dVhQe9rqLJqFXPIMblqpTOyIevQJgwqYUyt4VtMKB21gZXgNmKxRfRQKXncpX9sSLKjAZK9SfvZ3PW5X36XpgxhZYl8XTBiwGUhDBeqYwc58ecKDvY7uyGoWfDYXWH3eGP6WMe5zGKteGAd/C/0MRz7AmvoC1lFczSAUCFWwiAwysf66qZ9WSkfv150qciDPHcF22T4g20lhYOwNuUY9tMFF8v7hvUkZDsYaw8QrRlphmEg4elZ1STynuFXAUbEb6ZZeYiqy5rOGvZIZ32AMJMyLl3N7SOFYbMWFO/uhlYJvp/ckWn4FKCbRWyoGldD5sttOZbJ9Kt7bFLzoAKXuu9JMxtcYiX1DiCTy21AJAmSGUc6bwAC/PVbK8ant0TM5XvDkGbta9pSxRnJA9DTg2p04y7KiQmQNiLihQ7vuF/D01B/LYcCevbQgGyT97rkfqXc//LQk7wnuSimwqf5BT0G7ghCB8c0uUVhZvDbhEFZlEoHJDTHH3YuP+7RYBlE+lW1Aelp+lEo3jIYe7J6VpifobE3TtHtg='
+b'ANYIerYp3zwphEsJxpSoxeHUzi58Xr4ABHJ3DGjg0j9SbzqAhljkK0qkAzWC3F88ghdEbaPdRC9VLyPmGFXCH9sgNvdczM7ecwJwlaeOE7uMNR7kP7ZjORrcoDF6q0IzujR5q90MAx3VXsoUsvP3J38SIylfM22gRjLUHbM1nMXOaygHgMup41aSlU3jmAdmled+qUyFNyoSjGf26O+ygtYRDpmU/DLEi2oylISFSdVFXRTCyFX3ThiyJA70r5Gsg8GnD50p0e0jzTQU2VGbu8I2vDwxLq5hc2JUBN6n3XqIIB/4tKaRsred++J8R0qIIdVFPeLNCPJLCqq6UNxa3XEGeEP7GyxSBh+JL9++vceI3PzL8kem0TYhalWEzGreegeTX+WwkmG2PIFn2x8PO8s/orCSu3gb2e0+rQDJ+1TGRe1dcFytk2usjD5QAYMeiboDRTpnatRPtYCp8jPMlWtFSp/GihjrYZ+az1p0InjejVfF1qVwEfWWw5wE6GOTzB586cQGOLuIit8dz+CBATxOC8AhZYRxEyzNzdA9odD+M0p9hDlRftxuqjBRCQrJxms4ywSz2S7Whcs5OXa9xt6M3s7KoVPzaI+ryj2fSxMoomhQZgkCVC9KjF0nl/yIznVBB8Gbg+smWIUQwHjq2KKxhRlOgZPyPgXkkq/3cN8='
+b'AP+BOUws8omS1onqosF5mDGW1dySYV78SNnuZ9pMGppmvKzr4L1/h656mLW9Di4dw0XndBLxHGT2mz2caO8a4VT0nyHCbqj943kflRFFiY4zurwlT6gmNIMGhtbHMLEva0IkWN7boIR5weiqB6CdxpVUQVk4xmFpACQ5xlZoZqTyHMaqi5f0X2jmtP8ZwRgAgw5gNH2jl4GoPOsCphgL2rGB20nxRPHEtl7+pMCIxPRGnnr4apUrT90Fr/aRhuEcglHGaSPBaQfeUEl7wOOzFLk6VqRTD+Se4g24QgykF3Ij4dZgg2McGy4lNA6BXqK//6EJVf1mfhOIU0ZHitFqjgrzTYax6oRbgekrFOxwCAXdoxbHtyO/VDAaAgSNwiNOIE0Dna9gjnJzjMor9KTDgdERXP3i8ZFevqzHLoWlpkg4HURhY3+66NAypEbQ+5mfHYAkanAeCI+JAtcP/1mRi3Gjr6HsmD+RMDgryCeVmMrxf6GfVgQH3UK2it5hHHIZ/KR7U/tbh5kvD8BluWIunQAwXO5v8dy6tHkmHnVlOPXHVaL/iue7slTqR3qm0bUq8dXT7/DhbTnltAqtDySNIbysRE4jOXED5AwTCQxYntTpfK8bpjxtYSn41sipAFEWFmTK0yNN3zBT3LFdXCmwAJb3fpbDjBACxEqp3joDFaU='
+b'ALuCGY1yv+tgRWiy0ealFfAEQmzC6jjqbB5ljD+/zw1eaXXJwD/kwfUluzwCA1oH+2jWg6o9huk7wKTbo1Dav7GgdayU1+M5TunY4qVqbec5TvVQfQQJKNQNDtgsGgvNQtE3vIrbX1cW5LGbzxaFQYXUKwizUTON2cbwY/HuG/hnU5c2DA8f46TKLs221yfXEyFVXcZxM6n2s19CXxiIX0zEU9+VmLXd9zT5Ti9oRor7n6s9x9R5ylw5/7qC0S7/C2gCaMeAB/H8rHI83MSF+jceddIeSlTuXgGxWploKxi13lGnXD1slXJu8qk2A5/Z53GCHx3CZoDzgMch73avxEz1V0ri+kaqnqDat068HZWvOarovap+Lw1HBABx/UBqtaHf2v4RWFN4BSYxWHOr++YAY5vUutIAlhtEpgVigEmuxKCkx0qaMikPo5GHt90BQSiG1ie50avb5jDLEQU6yHdsTIdYgWkMNmDYM5RMYshsqXuxFZMkjNKEmU2YJr4ekiyuSsv0kXEbdKN70Y7XMahfGb7Ws9rmLSWE0MUGmXapI45f5UZpuvj9W+623vqZ3ENY08MWDxO/qQIYTVqUn+8gvLN9EHhwbJj06IVx4iv1C+M6OzH8PN4o4twgkK7eb+vkPem7q0S0efz+rD1ZUysfnPrNfU4cEN9gI4oJnJU='
+
+Verificação das hashes da mensagem:
+4 hashes corretas de 4, erro nos seguintes blocos:
+[]
+
+Verificação das hashes de label do OAEP:
+4 hashes corretas de 4, erro nos seguintes blocos:
+[]
+
+Mensagem decifrada:
+Canção do exílio
+Gonçalves Dias
+
+Minha terra tem palmeiras
+Onde canta o Sabiá,
+As aves, que aqui gorjeiam,
+Não gorjeiam como lá.
+
+Nosso céu tem mais estrelas,
+Nossas várzeas têm mais flores,
+Nossos bosques têm mais vida,
+Nossa vida mais amores.
+
+Em cismar, sozinho, à noite,
+Mais prazer encontro eu lá;
+Minha terra tem palmeiras,
+Onde canta o Sabiá.
+
+Minha terra tem primores,
+Que tais não encontro eu cá;
+Em cismar – sozinho, à noite –
+Mais prazer encontro eu lá;
+Minha terra tem palmeiras,
+Onde canta o Sabiá.
+
+Não permita Deus que eu morra,
+Sem que eu volte para lá;
+Sem que desfrute os primores
+Que não encontro por cá;
+Sem qu’inda aviste as palmeiras,
+Onde canta o Sabiá.
+
+R: Mensagem inicial corretamente enviada e recebida.
